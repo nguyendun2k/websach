@@ -1,0 +1,243 @@
+﻿@model IEnumerable<QuanLySach.Models.LoaiSP>
+@using QuanLySach.Models;
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-6 col-lg-2">
+            <div class="logo">
+                <a href="@Url.Action("Index", "Home")">
+                    <img src="../Assets/images/logo/logo.png" alt="logo images">
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-8 d-none d-lg-block">
+            <nav class="mainmenu__nav">
+                <ul class="meninmenu d-flex justify-content-start">
+                    <li class="drop with--one--item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+                    <li class="drop">
+                        <a href="@Url.Action("Shop", "Shop")">Cửa hàng</a>
+                    </li>
+                    <li class="drop">
+                        <a href="">Sách</a>
+                        <div class="megamenu mega03">
+                            <ul class="item item03">
+                                <li class="title">Thể loại</li>
+                                @foreach (var item in Model)
+                                {
+                                    <li><a href="@Url.Action("XemLoaiSP", "LoaiSP", new { ma = item.Ma })">@item.Ten </a></li>
+
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="drop">
+                        <a href="@Url.Action("ShowBlog", "Blog")">Tin tức</a>
+                        <div class="megamenu mega03">
+                            <ul class="item item03">
+                                <li class="title">Chuyên mục</li>
+                                @foreach (var item in ViewBag.ChuyenMuc)
+                                {
+                                    <li><a href="@Url.Action("showBlog", "Blog", new { ma = item.Ma })">@item.Ten </a></li>
+
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                    <li><a href="@Url.Action("Contact", "Home")">Liên hệ</a></li>
+                </ul>
+            </nav>
+        </div>
+        <div class="col-md-6 col-sm-6 col-6 col-lg-2">
+            <ul class="header__sidebar__right d-flex justify-content-end align-items-center">
+                @{ const string list = "wishlist";
+                    List<wishlist> wishlist = (List<wishlist>)Session[list];}
+                <li class="shop_search">
+                    @*<a class="search__active" href="#"></a>*@
+                    <form method="get" action="@Url.Action("SearchView","Home")">
+                        <input type="text" class="#" placeholder="Search..." style="text-align: left;" name="keyWord">
+                        <input type="submit" class="#" value="Tìm Kiếm">
+                    </form>
+                </li>
+                @*<form action="#">
+                        <div class="form-input">
+                            <input type="text" placeholder="Search...">
+                            <button><i class="fa fa-search"></i></button>
+                        </div>
+                    </form>*@
+                <li class="wishlist">
+                    @if (wishlist != null)
+                    {
+                        <a href="@Url.Action("XemWishList","wishlist")">
+                            <span class="product_qun">@wishlist.Count</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("XemWishList","wishlist")">
+                            <span class="product_qun">0</span>
+                        </a>
+                    }
+                </li>
+                <li class="shopcart">
+                    @{ const string gh = "Giohang";
+                        List<GioHang> giohangs = (List<GioHang>)Session[gh];
+                        long tongtien = 0;
+                        if (giohangs != null)
+
+                        {
+                            foreach (var item in giohangs)
+                            {
+                                long thanhtien = item.Soluong * (long)item.sp.Gia;
+                                tongtien = tongtien + thanhtien;
+                            }
+
+                            <a class="cartbox_active" href="#"><span class="product_qun">@giohangs.Count</span></a>
+                        }
+                        else
+                        {
+                            <a class="cartbox_active" href="#"><span class="product_qun">0</span></a>
+                        }
+                    }
+                    <!-- Start Shopping Cart -->
+                    <div class="block-minicart minicart__active">
+                        <div class="minicart-content-wrapper">
+                            <div class="micart__close">
+                                <span>Đóng</span>
+                            </div>
+                            <div class="items-total d-flex justify-content-between">
+                                @if (giohangs != null)
+                                {
+
+                                    <span>@giohangs.Count sản phẩm</span>
+                                }
+
+                                else
+                                {
+
+                                    <span>0 sản phẩm</span>
+                                }
+                                <span>Tổng số sản phẩm</span>
+                            </div>
+                            <div class="total_amount text-right">
+                                <span>@tongtien.ToString("##,#")</span>
+                            </div>
+                            <div class="mini_action checkout">
+                                <a class="checkout__btn" href="@Url.Action("LoginAcc","GioHangs")">Go to Checkout</a>
+                            </div>
+                            <div class="single__items">
+                                <div class="miniproduct">
+                                    @{ List<GioHang> giohang = (List<GioHang>)Session[gh];
+
+                                        if (giohang != null)
+                                        {
+                                            foreach (var item in giohang)
+                                            {
+                                                <div class="item01 d-flex mt--20">
+                                                    <div class="thumb">
+                                                        <a href="product-details.html"><img src="@item.sp.Anh" alt="product images"></a>
+                                                    </div>
+                                                    <div class="content">
+                                                        <h6><a href="product-details.html">Compete Track Tote</a></h6>
+                                                        @{ decimal gia = (decimal)item.sp.Gia;}
+                                                        <span class="prize">@gia.ToString("##,#")</span>
+                                                        <div class="product_prize d-flex justify-content-between">
+                                                            <span class="qun">Số lượng @item.Soluong</span>
+                                                            <ul class="d-flex justify-content-end">
+                                                                <li><a href="#"><i class="zmdi zmdi-settings"></i></a></li>
+                                                                <li><a href="@Url.Action("XoaSP","GioHangs" , new { masp = item.sp.Ma })"><i class="zmdi zmdi-delete"></i></a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="mini_action cart">
+                                <a class="cart__btn" href="@Url.Action("XemGioHang","GioHangs")">Xem giỏ hàng</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Shopping Cart -->
+                </li>
+                <li class="setting__bar__icon">
+                    <a class="setting__active" href="#"></a>
+                    <div class="searchbar__content setting__block">
+                        @if (Session["KhachHang"] != null)
+                        {
+                            KhachHang nd = (KhachHang)Session["KhachHang"];
+                            <div class="content-inner">
+                                <div class="switcher-currency">
+                                    <strong class="label switcher-label">
+                                        <span>@nd.Ten</span>
+                                    </strong>
+                                </div>
+                            </div>
+                        }
+                        <div class="content-inner">
+                            <div class="switcher-currency">
+                                <strong class="label switcher-label">
+                                    <span>Tài khoản của tôi</span>
+                                </strong>
+                                <div class="switcher-options">
+                                    <div class="switcher-currency-trigger">
+                                        <div class="setting__menu">
+                                            <span><a href="@Url.Action("XemGioHang","GioHangs")">Giỏ hàng</a></span>
+                                            <span><a href="@Url.Action("XemWishList","wishlist")">Dang sách yêu thích</a></span>
+
+                                            <span><a href="@Url.Action("TaoTaiKhoan","Home")">Tạo tài khoản</a></span>
+                                            @if (Session["KhachHang"] != null)
+                                            {
+                                                <span><a href="@Url.Action("myAccount","Home")">Tài khoản của tôi</a></span>
+                                                <span><a href="@Url.Action("DanhSachDonHang","Home")">Danh sách đơn hàng</a></span>
+                                                <span><a href="@Url.Action("Logout", "Home")">Đăng xuất</a></span>
+                                            }
+                                            else
+                                            {
+                                                <span><a href="@Url.Action("Login","Home")">Đăng nhập</a></span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- Start Mobile Menu -->
+    <div class="row d-none">
+        <div class="col-lg-12 d-none">
+            <nav class="mobilemenu__nav">
+                <ul class="meninmenu">
+                    <li><a href="@Url.Action("Index","Home")">Trang chủ</a></li>
+                    <li>
+                        <a href="">Thể loại</a>
+                        <ul>
+                            @foreach (var item in Model)
+                            {
+                                <li><a href="@Url.Action("XemLoaiSP","LoaiSP" , new { ma = item.Ma})">@item.Ten </a></li>
+
+                            }
+                        </ul>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Shop","Shop")">Cửa hàng</a>
+                        </li>
+                        <li>
+                            <a href="blog.html">Tin tức</a>
+                        </li>
+                        <li><a href="contact.html">Liên hệ</a></li>
+                    </ul>
+            </nav>
+        </div>
+    </div>
+    <!-- End Mobile Menu -->
+    <div class="mobile-menu d-block d-lg-none">
+    </div>
+    <!-- Mobile Menu -->
+</div>
+

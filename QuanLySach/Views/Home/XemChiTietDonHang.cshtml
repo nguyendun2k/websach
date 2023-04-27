@@ -1,0 +1,70 @@
+﻿@model IEnumerable<QuanLySach.Models.ChiTietDonHang>
+@{
+    ViewBag.Title = "XemChiTietDonHang";
+}
+
+<div class="ht__bradcaump__area bg-image--4" style="background-image:url(../Assets/images/banner/banner4.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="bradcaump__inner text-center">
+                    <h2 class="bradcaump-title">Danh sách đơn hàng</h2>
+                    <nav class="bradcaump-content">
+                        <a class="breadcrumb_item" href="@Url.Action("Index","Home")">Trang chủ</a>
+                        <span class="brd-separetor">/</span>
+                        <span class="breadcrumb_item active">Danh sách đơn hàng</span>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Bradcaump area -->
+<!-- Start Checkout Area -->
+<section class="wn__checkout__area section-padding--lg bg__white">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-12">
+                <div class="table-content wnro__table table-responsive">
+                    <table>
+                        <thead>
+                            <tr class="title-top">
+                                @*<th class="product-thumbnail">Mã sp</th>*@
+                                <th class="product-thumbnail" height="150px" width="250px">Hình ảnh</th>
+                                <th class="product-name">Tên sản phẩm</th>
+                                <th class="product-price">Giá</th>
+                                <th class="product-quantity">Tác giả</th>
+                                <th class="product-subtotal">Nhà xuất bản</th>
+                                <th class="product-remove">Số lượng</th>
+                                <th class="product-remove">Đơn giá</th>
+                                @*<th class="product-remove">Xóa</th>*@
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                            <tr>
+                                @*<td class="product-thumbnail">@item.MaSP</td>*@
+                                <td class="product-thumbnail"><img src="@item.SanPham.Anh" height="150px" width="250px" /></td>
+                                <td class="product-name">@item.SanPham.Ten</td>
+                                <td class="product-price">@item.SanPham.Gia</td>
+                                <td class="product-quantity">@item.SanPham.TacGia</td>
+                                <td class="product-quantity">@item.SanPham.NhaXuatBan</td>
+                                <td class="product-quantity">@item.SoLuong</td>
+                                <td class="product-quantity">@item.DonGia</td>
+                                @*<td class="product-remove"><a href="@Url.Action("XoaDonHang","Home" , new { masp = item.MaSP })"><i class="fa-solid fa-trash-can"></i></a></td>*@
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+

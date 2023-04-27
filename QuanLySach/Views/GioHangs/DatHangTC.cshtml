@@ -1,0 +1,87 @@
+﻿@model IEnumerable<QuanLySach.Models.ChiTietDonHang>
+@using QuanLySach.Models;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="ht__bradcaump__area bg-image--4" style="background-image:url(../Assets/images/banner/banner4.jpg)">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="bradcaump__inner text-center">
+                <h2 class="bradcaump-title">Checkout</h2>
+                <nav class="bradcaump-content">
+                    <a class="breadcrumb_item" href="index.html">Home</a>
+                    <span class="brd-separetor">/</span>
+                    <span class="breadcrumb_item active">Checkout</span>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- End Bradcaump area -->
+<!-- Start Checkout Area -->
+<section class="wn__checkout__area section-padding--lg bg__white">
+    <div class="container">
+        <div class="row">
+            @{ DonHang kh = (DonHang)Session["TTDonHang"]; }
+            <div class="col-lg-12 col-12 md-mt-40 sm-mt-40">
+                <div class="wn__order__box">
+                    <h3 class="onder__title">Your order</h3>
+                    <ul class="order__total">
+                        <li>Product</li>
+                        <li>Total</li>
+                    </ul>
+                    <ul class="order_product">
+                        @foreach (var item in Model)
+                        {
+                            decimal gia = (decimal)item.SanPham.Gia;
+                            <li>@item.SanPham.Ten × @item.SoLuong<span>@gia.ToString("##,#")</span></li>
+                        }
+                    </ul>
+                    <ul class="order__total">
+                        <li>Tên khách hàng</li>
+                        <li>@kh.KhachHang.Ten</li>
+                    </ul>
+                    <ul class="order__total">
+                        <li>Địa chỉ</li>
+                        <li>@kh.KhachHang.DiaChi</li>
+                    </ul>
+                    <ul class="order__total">
+                        <li>Số điện thoại</li>
+                        <li>@kh.KhachHang.DienThoai</li>
+                    </ul>
+
+                    <ul class="order__total">
+                        <li>Email</li>
+                        <li>@kh.KhachHang.Email</li>
+                    </ul>
+                    <ul class="order__total">
+                        <li>Ngày đặt hàng</li>
+                        <li>@kh.NgayDatHang</li>
+                    </ul>
+                    @{
+                        DateTime saveNow = DateTime.Now;
+                        DateTime ngaygh = saveNow.AddDays(3);
+
+                    }
+                    <ul class="order__total">
+                        <li>Ngày nhận hàng</li>
+                        <li>@ngaygh</li>
+                    </ul>
+                    <ul class="total__amount">
+                        @{ decimal tien = 0;}
+                        @foreach (var item in Model)
+                        {
+                            decimal tongtien = (decimal)item.SoLuong * (decimal)item.SanPham.Gia;
+                            tien = tien + tongtien;
+                        }
+                        <li>Tổng thanh toán <span>@tien.ToString("##,#")</span></li>
+                    </ul>
+                </div>
+                <a href="@Url.Action("Index","Home")" style="width:100%;" class="btn btn-primary mt--100">Quay lại</a>
+            </div>
+        </div>
+    </div>
+</section>

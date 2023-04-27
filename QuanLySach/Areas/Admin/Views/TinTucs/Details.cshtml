@@ -1,0 +1,71 @@
+﻿@model QuanLySach.Models.TinTuc
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+<div class="pd-ltr-20 xs-pd-20-10">
+    <div class="min-height-200px">
+        <div class="card-box mb-30">
+            <div class="pd-20">
+                <dl class="dl-horizontal">
+                    <dt>
+                        Tiêu đề
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.TieuDe)
+                    </dd>
+
+                    <dt>
+                        Mô tả ngắn
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.MoTaNgan)
+                    </dd>
+
+                    <dt>
+                        Mô tả
+                    </dt>
+
+                    <dd>
+                        @Html.Raw(Model.MoTa)
+                    </dd>
+
+                    <dt>
+                        Hình ảnh
+                    </dt>
+
+                    <dd>
+                        <img src="@Model.Anh" width="300px" height="300px" />
+                    </dd>
+                    <dt>
+                        Tên chuyên mục
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.ChuyenMuc.Ten)
+                    </dd>
+
+                    <dt>
+                        Tên tác gia
+                    </dt>
+                    <dd>
+                        @Model.TacGia
+                    </dd>
+                    <dt>
+                        Ngày đăng
+                    </dt>
+                    <dd>
+                        @Model.NgayDang
+                    </dd>
+
+                </dl>
+                <p>
+                    @Html.ActionLink("Edit", "Edit", new { id = Model.Ma }) |
+                    @Html.ActionLink("Back to List", "Index")
+                </p>
+            </div>
+        </div>
+     </div>
+</div>

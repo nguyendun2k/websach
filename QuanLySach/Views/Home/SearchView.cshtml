@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div class="slider-area brown__nav slider--15 slide__activation slide__arrow01 owl-carousel owl-theme">
+    @Html.Action("Banner", "Home")
+</div>
+
+<section class="wn__bestseller__area bg--white pt--80  pb--30">
+    @Html.Action("Search", "Home")
+</section>
+<section class="wn__recent__post bg--gray ptb--80">
+    @Html.Action("Blog", "Home")
+</section>
+<section class="best-seel-area pt--80 pb--60">
+    @Html.Action("BestSell", "Home")
+</section>

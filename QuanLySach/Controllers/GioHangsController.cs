@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -169,6 +170,9 @@ namespace QuanLySach.Controllers
                 ctd.SoLuong = item.Soluong;
                 ctd.DonGia = item.sp.Gia;
                 db.ChiTietDonHangs.Add(ctd);
+                var product = db.SanPhams.FirstOrDefault(x => x.Ma == item.sp.Ma);
+                product.SoLuongBanRa = product.SoLuongBanRa + item.Soluong;
+                db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
             }
             DonHang ttdh = db.DonHangs.Find(mdh);
@@ -202,7 +206,9 @@ namespace QuanLySach.Controllers
         public ActionResult LoginAcc(string SoDienThoai, string MatKhau)
         {
             List<GioHang> gh = (List<GioHang>)Session[giohang];
-            var isKH = db.KhachHangs.Where(x => x.DienThoai == SoDienThoai && x.Password == MatKhau).FirstOrDefault();
+            MaHoa mh = new MaHoa();
+            string mk = mh.GetMD5_low(MatKhau);
+            var isKH = db.KhachHangs.Where(x => x.DienThoai == SoDienThoai && x.Password == mk).FirstOrDefault();
             if (isKH != null)
             {
                 Session["KhachHang"] = isKH;
@@ -238,7 +244,9 @@ namespace QuanLySach.Controllers
             kh.DiaChi = diachi;
             kh.DienThoai = sodienthoai;
             kh.Email = email;
-            kh.Password = password;
+            MaHoa mh = new MaHoa();
+            string mk = mh.GetMD5_low(password);
+            kh.Password = mk;
             db.KhachHangs.Add(kh);
             db.SaveChanges();
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using QuanLySach.Models;
@@ -14,7 +16,8 @@ namespace QuanLySach.Areas.Admin.Controllers
         // GET: Admin/DonHang
         public ActionResult Index()
         {
-            return View();
+            var donhang = db.DonHangs.OrderByDescending(x => x.NgayDatHang).ToList();
+            return View(donhang);
         }
         public ActionResult DanhSachDonHang() {
 
@@ -46,6 +49,32 @@ namespace QuanLySach.Areas.Admin.Controllers
             db.ChiTietDonHangs.Remove(ctd);
             db.SaveChanges();
             return RedirectToAction("XemChiTiet" , new { ma = ma });
+        }
+        public ActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            DonHang donHang = db.DonHangs.Find(id);
+            if (donHang == null)
+            {
+                return HttpNotFound();
+            }
+            //ViewBag.MaLoai = new SelectList(db.LoaiSPs, "Ma", "Ten", donHang.MaLoai);
+            return View(donHang);
+        }
+        [HttpPost]
+        public ActionResult Edit([Bind(Include = "Ma,MaKhachHang,NgayDatHang,PhiGiao,TenNguoiNhan,DiaChi, DienThoai, Email,TrangThai")] DonHang donHang)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(donHang).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            //ViewBag.MaLoai = new SelectList(db.LoaiSPs, "Ma", "Ten", donHang.MaLoai);
+            return View(donHang);
         }
     }
 }

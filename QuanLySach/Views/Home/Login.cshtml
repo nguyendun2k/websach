@@ -1,4 +1,4 @@
-﻿
+﻿@model QuanLySach.Models.Account
 @{
     ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -19,8 +19,6 @@
         </div>
     </div>
 </div>
-<!-- End Bradcaump area -->
-<!-- Start Checkout Area -->
 <section class="wn__checkout__area section-padding--lg bg__white">
     <div class="container">
         <div class="row">
@@ -32,10 +30,12 @@
                             <div class="input_box">
                                 <label> Số điện thoại<span>*</span></label>
                                 <input type="text" placeholder="Nhập số điện thoại" name="SoDienThoai" required>
+                                @Html.ValidationMessageFor(model =>model.SoDienThoai, "", new { @class = "text-danger" })
                             </div>
                             <div class="input_box">
                                 <label>Mật khẩu<span>*</span></label>
                                 <input type="password" placeholder="Nhập số mật khẩu" name="MatKhau" required>
+                                @Html.ValidationMessageFor(model => model.MatKhau)
                             </div>
                         </div>
                         @if (ViewBag.mess != null)

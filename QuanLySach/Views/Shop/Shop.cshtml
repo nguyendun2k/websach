@@ -45,18 +45,26 @@
                         <div class="content-shopby">
                             <div class="price_filter s-filter clear">
                                 <form action="@Url.Action("Shop","Shop")" method="GET" id="range_item">
-                                    <input type="range"  id="slider-range" min="10000" width="400px" max="500000" name="gia" oninput="document.getElementById('input_range').value = this.value"  />
-                                    <div class="slider__range--output">
-                                        <div class="price__output--wrap">
-                                            <div class="price--output">
-                                                <span>Giá :</span> <input type="text" id="input_range" value="250000" disabled />VND
-                                            </div>
-                                            <div class="price--filter">
-                                                <a style="color:white" onclick="document.getElementById('range_item').submit()">Lọc</a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <label style="font-size:20px">Tăng dần</label>
+                                    @Html.RadioButton("asc", "true")<br />
+                                    <label style="font-size:20px">Giảm dần</label>
+                                    @Html.RadioButton("asc", "false")
+                                    <br />
+                                    <button class="btn btn-primary" type="submit">Lọc</button>
                                 </form>
+                                @*<form action="@Url.Action("Shop","Shop")" method="GET" id="range_item">
+            <input type="range"  id="slider-range" min="10000" width="400px" max="500000" name="gia" oninput="document.getElementById('input_range').value = this.value"  />
+            <div class="slider__range--output">
+                <div class="price__output--wrap">
+                    <div class="price--output">
+                        <span>Giá :</span> <input type="text" id="input_range" value="250000" disabled />VND
+                    </div>
+                    <div class="price--filter">
+                        <a style="color:white" onclick="document.getElementById('range_item').submit()">Lọc</a>
+                    </div>
+                </div>
+            </div>
+        </form>*@
                             </div>
                         </div>
                     </aside>

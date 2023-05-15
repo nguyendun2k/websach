@@ -15,7 +15,7 @@ namespace QuanLySach.Controllers
         {
             return View();
         }
-        public ActionResult Shop( int? page , string tensp , decimal? gia)
+        public ActionResult Shop( int? page , string tensp , bool? asc)
         {
             if (page == null)
             {
@@ -23,21 +23,46 @@ namespace QuanLySach.Controllers
             }
             int pageSize = 6;
             int pageNumber = (page ?? 1);
-            var  LoaiSP = db.SanPhams.OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
-
-            if(tensp != null)
+            IPagedList<SanPham> LoaiSP;
+            if (tensp != null)
             {
-                LoaiSP = db.SanPhams.Where(x=>x.Ten.Contains(tensp)).OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
+                LoaiSP = db.SanPhams.Where(x => x.Ten.Contains(tensp)).OrderBy(s => s.Ma).ToPagedList(pageNumber, pageSize);
+            }
+            ViewBag.asc = true;
+
+            if (asc != null && asc == true)
+            {
+                LoaiSP = db.SanPhams.OrderBy(x => x.Gia).ToPagedList(pageNumber, pageSize);
+
+            }
+            else
+            {
+                LoaiSP = db.SanPhams.OrderByDescending(x => x.Gia).ToPagedList(pageNumber, pageSize);
+                ViewBag.asc = false;
             }
 
 
-            if (gia > 0)
-            {
-                LoaiSP = db.SanPhams.Where(x => x.Gia <= gia).OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
-            }
 
             ViewBag.LoaiSP = db.LoaiSPs.ToList();
             return View(LoaiSP);
+
+
+            //var  LoaiSP = db.SanPhams.OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
+
+            //if(tensp != null)
+            //{
+            //    LoaiSP = db.SanPhams.Where(x=>x.Ten.Contains(tensp)).OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
+            //}
+
+
+            //if (gia > 0)
+            //{
+            //    LoaiSP = db.SanPhams.Where(x => x.Gia <= gia).OrderByDescending(s => s.Ma).ToPagedList(pageNumber, pageSize);
+            //}
+
+            //ViewBag.LoaiSP = db.LoaiSPs.ToList();
+            //return View(LoaiSP);
+
         }
     }
 }

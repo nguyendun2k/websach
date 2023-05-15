@@ -79,7 +79,7 @@
                             var giagiam = giaGoc * item.Soluong * phanTRam / 100;
                             var thanhtien = giaGoc * item.Soluong - giagiam;
                             listThanhtien.Add(thanhtien);
-                            <li>@item.sp.Ten × @item.Soluong<span>@giaGoc.ToString("##,#")</span></li>
+                            <li>@item.sp.Ten × @item.Soluong<span>@giaGoc.ToString("##,#")</span></li>  //giaGoc = gia
                             <li>Khuyến mãi<span>@phanTRam %</span></li>
                             //decimal gia = (decimal)item.sp.Gia;
                             //<li>@item.sp.Ten × @item.Soluong<span>@gia.ToString("##,#")</span></li>
@@ -89,8 +89,9 @@
                         @{ decimal tien = 0;}
                         @foreach (var item in listThanhtien)  //listThanhtien = Model
                         {
-                            tien += item;
+                            //decimal tongtien = (decimal)item.Soluong * (decimal)item.sp.Gia;
                             //tien = tien + tongtien;
+                            tien += item;  //item = tongtien
                         }
                         <li>Tổng thanh toán <span>@tien.ToString("##,#")</span></li>
                     </ul>

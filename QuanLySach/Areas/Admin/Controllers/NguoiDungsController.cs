@@ -50,6 +50,9 @@ namespace QuanLySach.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                nguoiDung.Quyen = "Admin";
+                MaHoa mh = new MaHoa();
+                nguoiDung.MatKhau = mh.GetMD5_low(nguoiDung.MatKhau);
                 db.NguoiDungs.Add(nguoiDung);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -82,6 +85,7 @@ namespace QuanLySach.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                nguoiDung.Quyen = "Admin";
                 db.Entry(nguoiDung).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

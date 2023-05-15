@@ -118,7 +118,9 @@ namespace QuanLySach.Controllers
             kh.DiaChi = diachi;
             kh.DienThoai = sodienthoai;
             kh.Email = email;
-            kh.Password = password;
+            MaHoa mh = new MaHoa();
+            string mk = mh.GetMD5_low(password);
+            kh.Password = mk;
             db.KhachHangs.Add(kh);
             db.SaveChanges();
             ViewBag.mes = "Tạo tài khoản thành công";
@@ -129,18 +131,24 @@ namespace QuanLySach.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult Login(string SoDienThoai, string MatKhau)
+        public ActionResult Login(Account account)
         {
-            var isKH = db.KhachHangs.Where(x => x.DienThoai == SoDienThoai && x.Password == MatKhau).FirstOrDefault();
-            if (isKH != null)
+            if (ModelState.IsValid)
             {
-                Session["KhachHang"] = isKH;
-                return Redirect("Index");
+                MaHoa mh = new MaHoa();
+                string mk = mh.GetMD5_low(account.MatKhau);
+                var isKH = db.KhachHangs.Where(x => x.DienThoai == account.SoDienThoai && x.Password == mk).FirstOrDefault();
+                if (isKH != null)
+                {
+                    Session["KhachHang"] = isKH;
+                    return Redirect("Index");
+                }
+                else
+                {
+                    ViewBag.mess = "Đăng nhập không thành công";
+                }
             }
-            else
-            {
-                ViewBag.mess = "Đăng nhập không thành công";
-            }
+           
             return View();
         
         }
@@ -197,8 +205,8 @@ namespace QuanLySach.Controllers
             if (!string.IsNullOrWhiteSpace(keyWord))
             {
                 var allProduct = db.SanPhams.ToList();
-                var nameResult = allProduct.Where(x => x.Ten.RemoveVietnameseSign().Contains(keyWord.RemoveVietnameseSign(), StringComparison.CurrentCultureIgnoreCase)).ToList();
-                var authorResult = allProduct.Where(x => x.TacGia.RemoveVietnameseSign().Contains(keyWord.RemoveVietnameseSign(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var nameResult = allProduct.Where(x =>x.Ten!=null && x.Ten.RemoveVietnameseSign().Contains(keyWord.RemoveVietnameseSign(), StringComparison.CurrentCultureIgnoreCase)).ToList();
+                var authorResult = allProduct.Where(x =>x.TacGia!=null && x.TacGia.RemoveVietnameseSign().Contains(keyWord.RemoveVietnameseSign(), StringComparison.CurrentCultureIgnoreCase)).ToList();
                 sp.AddRange(nameResult);
                 sp.AddRange(authorResult);
             }

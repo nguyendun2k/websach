@@ -11,6 +11,7 @@ using System.Web.Mvc;
 
 namespace QuanLySach.Areas.Admin.Controllers
 {
+    [Authorize]
     public class ChiTietDonHangsController : Controller
     {
         private QuanLySachEntities db = new QuanLySachEntities();

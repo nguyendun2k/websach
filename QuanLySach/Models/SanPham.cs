@@ -26,7 +26,8 @@ namespace QuanLySach.Models
         public int MaLoai { get; set; }
         public string Anh { get; set; }
         public string Chitiet { get; set; }
-        public Nullable<int> TieuBieu { get; set; }
+        public Nullable<int> SoLuongBanRa { get; set; }
+        public Nullable<int> SoLuongSach { get; set; }
         public Nullable<decimal> Gia { get; set; }
         public string TacGia { get; set; }
         public string NhaXuatBan { get; set; }

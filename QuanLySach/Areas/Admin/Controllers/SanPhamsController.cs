@@ -49,7 +49,7 @@ namespace QuanLySach.Areas.Admin.Controllers
         [HttpPost]
        // [ValidateAntiForgeryToken]
        [ValidateInput(false)]
-        public ActionResult Create([Bind(Include = "Ma,Ten,Mota,MaLoai,Anh,Chitiet, TieuBieu, Gia,TacGia , NhaXuatBan , NamXB , GiamGia")] SanPham sanPham)
+        public ActionResult Create([Bind(Include = "Ma,Ten,Mota,MaLoai,Anh,Chitiet,SoLuongBanRa, SoLuongSach, Gia,TacGia , NhaXuatBan , NamXB , GiamGia")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace QuanLySach.Areas.Admin.Controllers
         [HttpPost]
         // [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult Edit([Bind(Include = "Ma,Ten,Mota,MaLoai,Anh,Chitiet,TieuBieu, Gia ,TacGia , NhaXuatBan , NamXB , GiamGia")] SanPham sanPham)
+        public ActionResult Edit([Bind(Include = "Ma,Ten,Mota,MaLoai,Anh,Chitiet,SoLuongBanRa, SoLuongSach, Gia ,TacGia , NhaXuatBan , NamXB , GiamGia")] SanPham sanPham)
         {
             if (ModelState.IsValid)
             {

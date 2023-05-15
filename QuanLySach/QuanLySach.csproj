@@ -160,62 +160,62 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helper\StringExtension.cs" />
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Models\CauHinh.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ChiTietDonHang.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ChuyenMuc.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DonHang.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GioHang.cs" />
     <Compile Include="Models\KhachHang.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\LoaiSP.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MaHoa.cs" />
     <Compile Include="Models\NguoiDung.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\QuanLySach.Context.cs">
+    <Compile Include="Models\QuanLySachModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>QuanLySach.Context.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\QuanLySach.cs">
+    <Compile Include="Models\QuanLySachModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\QuanLySach.Designer.cs">
+    <Compile Include="Models\QuanLySachModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>QuanLySach.edmx</DependentUpon>
+      <DependentUpon>QuanLySachModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\SanPham.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagramdefinition_Result.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\sp_helpdiagrams_Result.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\TheTag.cs">
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TinTuc.cs">
-      <DependentUpon>QuanLySach.tt</DependentUpon>
+      <DependentUpon>QuanLySachModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Util.cs" />
     <Compile Include="Models\wishlist.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IRepository.cs" />
+    <Compile Include="Repository\Repository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Asset\ckeditor\adapters\jquery.js" />
@@ -2577,15 +2577,15 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Models\QuanLySach.Context.tt">
+    <Content Include="Models\QuanLySachModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>QuanLySach.edmx</DependentUpon>
-      <LastGenOutput>QuanLySach.Context.cs</LastGenOutput>
+      <DependentUpon>QuanLySachModel.edmx</DependentUpon>
+      <LastGenOutput>QuanLySachModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\QuanLySach.tt">
+    <Content Include="Models\QuanLySachModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>QuanLySach.edmx</DependentUpon>
-      <LastGenOutput>QuanLySach.cs</LastGenOutput>
+      <DependentUpon>QuanLySachModel.edmx</DependentUpon>
+      <LastGenOutput>QuanLySachModel.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2814,17 +2814,19 @@
     <Content Include="Areas\Admin\Views\ChiTietDonHangs\Details.cshtml" />
     <Content Include="Areas\Admin\Views\ChiTietDonHangs\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ChiTietDonHangs\Index.cshtml" />
-    <EntityDeploy Include="Models\QuanLySach.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>QuanLySach.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\QuanLySach.edmx.diagram">
-      <DependentUpon>QuanLySach.edmx</DependentUpon>
-    </Content>
     <Content Include="..\.editorconfig">
       <Link>.editorconfig</Link>
     </Content>
     <Content Include="Areas\Admin\Views\Default\register.cshtml" />
+    <EntityDeploy Include="Models\QuanLySachModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>QuanLySachModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\QuanLySachModel.edmx.diagram">
+      <DependentUpon>QuanLySachModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Views\DonHang\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\DonHang\Index.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />

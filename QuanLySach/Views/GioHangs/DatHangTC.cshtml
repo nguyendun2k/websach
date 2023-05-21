@@ -71,11 +71,19 @@
                         <li>@ngaygh</li>
                     </ul>
                     <ul class="total__amount">
-                        @{ decimal tien = 0;}
-                        @foreach (var item in Model)
-                        {
-                            decimal tongtien = (decimal)item.SoLuong * (decimal)item.SanPham.Gia;
-                            tien = tien + tongtien;
+                        @{
+                            List<GioHang> gh = (List<GioHang>)Session["GioHang"];
+                            var listThanhtien = new List<decimal>();
+                            foreach (var item in gh)
+                            {
+                                decimal giaGoc = item.sp.Gia ?? 0;
+                                var phanTRam = decimal.Parse(item.sp.GiamGia);
+                                var giagiam = giaGoc * item.Soluong * phanTRam / 100;
+                                var thanhtien = giaGoc * item.Soluong - giagiam;
+                                listThanhtien.Add(thanhtien);
+                            }
+                            decimal tien = listThanhtien.Sum(x => x);
+                            Session["GioHang"] = null;
                         }
                         <li>Tổng thanh toán <span>@tien.ToString("##,#")</span></li>
                     </ul>

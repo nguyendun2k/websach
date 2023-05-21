@@ -453,7 +453,7 @@ namespace QuanLySach.Controllers
 
                 DonHang ttdh = db.DonHangs.Find(mdh);
                 Session["TTDonHang"] = ttdh;
-                Session[giohang] = null;
+
                 #endregion
                 return Redirect(paypalRedirectUrl);
             }

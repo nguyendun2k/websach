@@ -27,7 +27,7 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-6 col-12">
-                <form action="@Url.Action("CheckOutProduct","GioHangs")" method="post">
+                <form action="@Url.Action("PaymentWithPaypal","GioHangs")" method="post">
                     <div class="customer_details">
                         <h3>Thông tin khách hàng</h3>
                         @{ KhachHang kh = (KhachHang)Session["KhachHang"]; }
@@ -93,6 +93,7 @@
                             //tien = tien + tongtien;
                             tien += item;  //item = tongtien
                         }
+                        
                         <li>Tổng thanh toán <span>@tien.ToString("##,#")</span></li>
                     </ul>
                 </div>

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Razor.Parser.SyntaxTree;
+using PagedList;
+using PayPal.Api;
 using QuanLySach.Models;
 
 namespace QuanLySach.Controllers
@@ -11,6 +15,7 @@ namespace QuanLySach.Controllers
     public class GioHangsController : Controller
     {
         // GET: GioHangs
+        
         QuanLySachEntities db = new QuanLySachEntities();
         string giohang = "GioHang";
         public ActionResult Index()
@@ -118,6 +123,17 @@ namespace QuanLySach.Controllers
         public ActionResult CheckOut()
         {
             List<GioHang> gh = (List<GioHang>)Session[giohang];
+            var listThanhtien = new List<decimal>();
+            foreach (var item in gh)
+            {
+                decimal giaGoc = item.sp.Gia ?? 0;
+                var phanTRam = decimal.Parse(item.sp.GiamGia);
+                var giagiam = giaGoc * item.Soluong * phanTRam / 100;
+                var thanhtien = giaGoc * item.Soluong - giagiam;
+                listThanhtien.Add(thanhtien);
+            }
+            Session["thanhtien"] = listThanhtien.Sum(x => x);
+
             if (gh == null)
             {
                 return Redirect(Request.UrlReferrer.ToString());
@@ -175,6 +191,7 @@ namespace QuanLySach.Controllers
                 db.Entry(product).State = EntityState.Modified;
                 db.SaveChanges();
             }
+            
             DonHang ttdh = db.DonHangs.Find(mdh);
             Session["TTDonHang"] = ttdh;
             return RedirectToAction("DatHangTC");
@@ -192,13 +209,13 @@ namespace QuanLySach.Controllers
             }
             else
             {
-                if(kh != null)
+                if (kh != null)
                 {
                     return Redirect("CheckOut");
                 }
                 else
                 {
-                   return View(gh);
+                    return View(gh);
                 }
             }
         }
@@ -293,10 +310,167 @@ namespace QuanLySach.Controllers
 
             var dh = (DonHang)Session["TTDonHang"];
             var ctdh = db.ChiTietDonHangs.Where(x => x.MaDH == dh.Ma).ToList();
-            Session[giohang] = null;
+            //Session[giohang] = null;
             return View(ctdh);
 
         }
 
+        private Payment payment;
+        private Payment CreatePayment(APIContext context, string redirectUrl)
+        {
+            const decimal UsdToVnd = 23470.00m;
+            var listItems = new ItemList() { items = new List<Item>() };
+            List<GioHang> gh = (List<GioHang>)Session[giohang];
+            //gh = gh.Select(x => x.sp).ToList();
+            foreach (GioHang item in gh)
+            {
+                listItems.items.Add(new Item
+                {
+                    name = item.sp.Ten,
+                    currency = "USD",
+                    price = $"{item.sp.Gia / UsdToVnd:n}",
+                    quantity = item.Soluong.ToString(),
+                    sku = "sku"
+                });
+            }
+
+            var payer = new Payer() { payment_method = "Paypal" };
+            var redirectUrls = new RedirectUrls
+            {
+                cancel_url = redirectUrl,
+                return_url = redirectUrl,
+            };
+            var details = new Details()
+            {
+                tax = "0",
+                shipping = "0",
+                subtotal = $"{listItems.items.Sum(x => Convert.ToDecimal(x.price) * Convert.ToDecimal(x.quantity)):n}",
+            };
+            var tax = Convert.ToDecimal(details.tax);
+            var shipping = Convert.ToDecimal(details.shipping);
+            var subtotal = listItems.items.Sum(x => Convert.ToDecimal(x.price) * Convert.ToDecimal(x.quantity));
+            var amounts = new Amount
+            {
+                currency = "USD",
+                total = $"{(tax + shipping + subtotal):n}",
+                details = details,
+            };
+            var transactions = new List<Transaction>()
+            {
+                new Transaction
+                {
+                    description = "Websach transaction",
+                    invoice_number = Convert.ToString(new Random().Next(100000)),
+                    amount = amounts,
+                    item_list = listItems
+                }
+            };
+
+            payment = new Payment()
+            {
+                intent = "sale",
+                payer = payer,
+                transactions = transactions,
+                redirect_urls = redirectUrls
+            };
+
+            return payment.Create(context);
+        }
+        private Payment ExecutePayment(APIContext context, string payerId, string paymentId)
+        {
+            var paymentExecution = new PaymentExecution
+            {
+                payer_id = payerId,
+            };
+
+            payment = new Payment
+            {
+                id = paymentId,
+            };
+            return payment.Execute(context, paymentExecution);
+        }
+
+        public ActionResult PaymentWithPaypal(string makh, string tenkh, string diachi, string SoDienThoai, string email)
+        {
+            APIContext apiContext = PaypalConfiguration.GetAPIContext();
+            List<GioHang> gh = (List<GioHang>)Session[giohang];
+            string payerId = Request.Params["PayerID"];
+            var _makh = Convert.ToInt32(makh);
+            if (string.IsNullOrEmpty(payerId))
+            {
+                string baseURI = Request.Url.Scheme + "://" + Request.Url.Authority + "/GioHangs/PaymentWithPayPal?";
+                var guid = Convert.ToString((new Random()).Next(100000));
+                var createdPayment = CreatePayment(apiContext, baseURI + "guid=" + guid);
+                var links = createdPayment.links.GetEnumerator();
+                string paypalRedirectUrl = null;
+                while (links.MoveNext())
+                {
+                    Links lnk = links.Current;
+                    if (lnk.rel.ToLower().Trim().Equals("approval_url"))
+                    {
+                        paypalRedirectUrl = lnk.href;
+                    }
+                }
+                Session.Add(guid, createdPayment.id);
+
+                #region save order to Db
+                KhachHang kh = db.KhachHangs.Find(_makh);
+
+                kh.Ten = tenkh;
+                kh.DiaChi = diachi;
+                kh.DienThoai = SoDienThoai;
+                kh.Email = email;
+                db.Entry(kh).State = System.Data.Entity.EntityState.Modified;
+                db.SaveChanges();
+
+                DonHang dh = new DonHang();
+                dh.MaKhachHang = _makh;
+                dh.NgayDatHang = DateTime.Now;
+                dh.PhiGiao = 0;
+                dh.TenNguoiNhan = tenkh;
+                dh.DiaChi = diachi;
+                dh.DienThoai = SoDienThoai;
+                dh.Email = email;
+                dh.TrangThai = false;
+                db.DonHangs.Add(dh);
+                db.SaveChanges();
+                int mdh = db.DonHangs.OrderByDescending(x => x.Ma).FirstOrDefault().Ma;
+
+
+                foreach (var item in gh)
+                {
+                    ChiTietDonHang ctd = new ChiTietDonHang();
+                    ctd.MaDH = mdh;
+                    ctd.MaSP = item.sp.Ma;
+                    ctd.SoLuong = item.Soluong;
+                    ctd.DonGia = item.sp.Gia;
+                    db.ChiTietDonHangs.Add(ctd);
+                    var product = db.SanPhams.FirstOrDefault(x => x.Ma == item.sp.Ma);
+                    product.SoLuongBanRa = product.SoLuongBanRa + item.Soluong;
+                    db.Entry(product).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+
+                DonHang ttdh = db.DonHangs.Find(mdh);
+                Session["TTDonHang"] = ttdh;
+                Session[giohang] = null;
+                #endregion
+                return Redirect(paypalRedirectUrl);
+            }
+            else
+            { 
+                var guid = Request.Params["guid"];
+                var executedPayment = ExecutePayment(apiContext, payerId, Session[guid] as string);
+                //If executed payment failed then we will show payment failure message to user  
+                if (executedPayment.state.ToLower() != "approved")
+                {
+                    return View("Failure");
+                }
+                Session[guid] = null;
+                
+                return RedirectToAction("DatHangTC", "GioHangs");
+            }
+
+        }
     }
 }
